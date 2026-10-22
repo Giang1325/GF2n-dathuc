@@ -16,8 +16,10 @@ TEST = test_gf$(EXE)
 
 .PHONY: all test clean
 
-all:
-	@echo test build.
+all: $(APP)
+
+$(APP): src/main.c src/gf.c src/gf.h
+	$(CC) $(CFLAGS) -o $@ src/main.c src/gf.c
 
 test:
 	@echo test kiem thu.
