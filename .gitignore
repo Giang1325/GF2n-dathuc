@@ -1,0 +1,8 @@
+# File sinh ra khi build
+*.exe
+*.o
+gfmul
+test_gf
+
+# Cai dat rieng cua editor
+.vscode/
