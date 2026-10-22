@@ -7,7 +7,7 @@
 typedef struct {
     const char *name;
     int n;
-    uint8_t poly; /*da thuc toi gian bac n*/
+    uint16_t poly; /*da thuc toi gian bac n*/
     const char *poly_str; /*da thuc toi gian dang chu, de in ra*/
 } gf_field;
 

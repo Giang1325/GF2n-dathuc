@@ -9,14 +9,14 @@ uint16_t gf_mul(const gf_field *f, uint16_t a, uint16_t b)
     int i;
 
     for (i = 0; i < f->n; i++) {
-        a = (uint16_t)(a << 1); 
-        if (a & 0x100) {
-            a ^= f->poly;
-        }
         if (b & 1) {
             r ^= a;
         }
         b = (uint16_t)(b >> 1);
+        a = (uint16_t)(a << 1);
+        if (a & 0x100) {
+            a ^= f->poly;
+        }
     }
     return r;
 }
