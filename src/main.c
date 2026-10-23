@@ -1,11 +1,115 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "gf.h"
 
-int main(void)
+static void mulprint(const truong_gf *t, uint16_t a, uint16_t b)
 {
-    printf("%s: 0x57 * 0x83 = 0x%02X  (res: 0xC1)\n",
-           GF256.name, gf_mul(&GF256, 0x57, 0x83));
-    printf("%s: 0x8  * 0x2  = 0x%X  (res: 0x3)\n",
-           GF16.name, gf_mul(&GF16, 0x8, 0x2));
+    char dt_a[128], dt_b[128], dt_r[128];
+    uint16_t r = nhan_gf(t, a, b);
+
+    da_thuc_string(a, dt_a, sizeof dt_a);
+    da_thuc_string(b, dt_b, sizeof dt_b);
+    da_thuc_string(r, dt_r, sizeof dt_r);
+
+    printf("Truong %s, m(x) = %s\n", t->ten, t->da_thuc_chu);
+    printf("a = %X = %s\n", a, dt_a);
+    printf("b = %X = %s\n", b, dt_b);
+    printf("a * b = %X = %s\n", r, dt_r);
+}
+
+static int doc_bien(const truong_gf *t, const char *name, uint16_t *ans)
+{
+    unsigned int max_val = (1u << t->n) - 1;
+
+    printf("Nhap %s (hex, 0 den %X): ", name, max_val);
+    if (scanf("%x", ans) != 1) {
+        printf("Loi: khong phai so hex\n");
+        return 0;
+    }
+    if (*ans > max_val) {
+        printf("Loi: %X khong thuoc %s\n", *ans, t->ten);
+        return 0;
+    }
+    return 1;
+}
+
+static void gf16(void)
+{
+    uint16_t a, b;
+
+    printf("Bang nhan GF(2^4):\n");
+    for (a = 0; a < 16; a++) {
+        for (b = 0; b < 16; b++) {
+            printf("%X ", nhan_gf(&GF16, a, b));
+        }
+        printf("\n");
+    }
+}
+
+static int run(void)
+{
+    int choice;
+    uint16_t a, b;
+    const truong_gf *t;
+
+    for (;;) {
+        printf("\nChon (1: GF(2^4), 2: GF(2^8), 3: bang nhan GF(2^4), 0: thoat): ");
+        if (scanf("%d", &choice) != 1) {
+            continue;
+        }
+
+        if (choice == 0) {
+            return 0;
+        } else if (choice == 3) {
+            gf16();
+            continue;
+        } else if (choice == 1) {
+            t = &GF16;
+        } else if (choice == 2) {
+            t = &GF256;
+        } else {
+            printf("Lua chon khong hop le\n");
+            continue;
+        }
+
+        if (doc_bien(t, "a", &a) && doc_bien(t, "b", &b)) {
+            mulprint(t, a, b);
+        }
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    const truong_gf *t;
+    unsigned long a, b, gioi_han;
+    char *het_a, *het_b;
+
+    if (argc == 1) {
+        return run();
+    }
+
+    if (argc != 4) {
+        printf("Cach dung: gfmul <4|8> <a_hex> <b_hex>\n");
+        return 1;
+    }
+
+    if (argv[1][0] == '4' && argv[1][1] == '\0') {
+        t = &GF16;
+    } else if (argv[1][0] == '8' && argv[1][1] == '\0') {
+        t = &GF256;
+    } else {
+        printf("Loi: chi ho tro n = 4 hoac 8\n");
+        return 1;
+    }
+
+    gioi_han = 1ul << t->n;
+    a = strtoul(argv[2], &het_a, 16);
+    b = strtoul(argv[3], &het_b, 16);
+    if (*het_a != '\0' || *het_b != '\0' || a >= gioi_han || b >= gioi_han) {
+        printf("Loi: a, b phai la so hex tu 0 den %lX\n", gioi_han - 1);
+        return 1;
+    }
+
+    mulprint(t, (uint16_t)a, (uint16_t)b);
     return 0;
 }
