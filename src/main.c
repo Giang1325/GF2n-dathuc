@@ -17,19 +17,30 @@ static void mulprint(const truong_gf *t, uint16_t a, uint16_t b)
     printf("a * b = %X = %s\n", r, dt_r);
 }
 
+static void xoa_buffer(void)
+{
+    int c;
+
+    while ((c = getchar()) != '\n' && c != EOF) {
+    }
+}
+
 static int doc_bien(const truong_gf *t, const char *name, uint16_t *ans)
 {
     unsigned int max_val = (1u << t->n) - 1;
+    unsigned int value;
 
     printf("Nhap %s (hex, 0 den %X): ", name, max_val);
-    if (scanf("%x", ans) != 1) {
+    if (scanf("%x", &value) != 1) {
         printf("Loi: khong phai so hex\n");
+        xoa_buffer();
         return 0;
     }
-    if (*ans > max_val) {
-        printf("Loi: %X khong thuoc %s\n", *ans, t->ten);
+    if (value > max_val) {
+        printf("Loi: %X khong thuoc %s\n", value, t->ten);
         return 0;
     }
+    *ans = (uint16_t)value;
     return 1;
 }
 
@@ -48,13 +59,19 @@ static void gf16(void)
 
 static int run(void)
 {
-    int choice;
+    int choice, so_doc;
     uint16_t a, b;
     const truong_gf *t;
 
     for (;;) {
         printf("\nChon (1: GF(2^4), 2: GF(2^8), 3: bang nhan GF(2^4), 0: thoat): ");
-        if (scanf("%d", &choice) != 1) {
+        so_doc = scanf("%d", &choice);
+        if (so_doc == EOF) {
+            return 0;
+        }
+        if (so_doc != 1) {
+            printf("Loi: hay nhap so\n");
+            xoa_buffer();
             continue;
         }
 

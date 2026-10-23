@@ -21,8 +21,11 @@ all: $(APP)
 $(APP): src/main.c src/gf.c src/gf.h
 	$(CC) $(CFLAGS) -o $@ src/main.c src/gf.c
 
-test:
-	@echo test kiem thu.
+$(TEST): tests/test_gf.c src/gf.c src/gf.h
+	$(CC) $(CFLAGS) -Isrc -o $@ tests/test_gf.c src/gf.c
+
+test: $(TEST)
+	"$(CURDIR)/$(TEST)"
 
 clean:
 	-$(RM) $(APP) $(TEST)

@@ -34,6 +34,11 @@ void da_thuc_string(uint16_t value, char *chuoi, size_t Size)
     }
     chuoi[0] = '\0';
 
+    if (value == 0) {
+        snprintf(chuoi, Size, "0");
+        return;
+    }
+
     for (i = 15; i >= 0; i--) {
         if (!((value >> i) & 1)) {
             continue;
