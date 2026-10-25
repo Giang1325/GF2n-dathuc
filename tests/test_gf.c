@@ -44,14 +44,14 @@ static void test_vidu(void)
 
     check(nhan_gf(&GF16, 0x8, 0x2) == 0x3, "GF(2^4): 8 * 2 = 3");
     check(nhan_gf(&GF16, 0x8, 0x8) == 0xC, "GF(2^4): 8 * 8 = C");
-    check(nhan_gf(&GF16, 0xB, 0x7) == 0x5, "GF(2^4): B * 7 = 5");
+    check(nhan_gf(&GF16, 0xB, 0x7) == 0x4, "GF(2^4): B * 7 = 4");
     check(nhan_gf(&GF16, 0x2, 0x9) == 0x1, "GF(2^4): 2 * 9 = 1");
 }
 
 static void ss(const truong_gf *t)
 {
-    uint8_t a, b;
-    uint8_t max_val = (uint8_t)((1u << t->n) - 1);
+    unsigned a, b;
+    unsigned max_val = (1u << t->n) - 1;
     int ok = 1;
     char name[80];
 
